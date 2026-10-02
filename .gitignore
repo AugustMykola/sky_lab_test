@@ -6,3 +6,4 @@ data/
 .env
 .vscode/
 docker-compose.override.yml
+*.tar.gz
