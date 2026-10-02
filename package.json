@@ -1,0 +1,14 @@
+{
+  "name": "log-analyzer",
+  "private": true,
+  "workspaces": [
+    "packages/log-domain",
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "build:domain": "npm run build -w @log-analyzer/domain",
+    "test": "npm run build:domain && npm run test --workspaces --if-present",
+    "typecheck": "npm run build:domain && npm run typecheck --workspaces --if-present"
+  }
+}

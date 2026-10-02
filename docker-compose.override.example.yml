@@ -1,0 +1,14 @@
+# Local-only build tweak for machines where antivirus/proxy intercepts HTTPS
+# (e.g. Avast Web Shield). Copy to docker-compose.override.yml (git-ignored)
+# and point EXTRA_CA_CERT at the interceptor's root certificate (.pem).
+services:
+  backend:
+    build:
+      secrets: [extra_ca]
+  frontend:
+    build:
+      secrets: [extra_ca]
+
+secrets:
+  extra_ca:
+    file: ${EXTRA_CA_CERT:-${NODE_EXTRA_CA_CERTS}}

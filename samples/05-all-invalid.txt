@@ -1,0 +1,3 @@
+hello world
+this is not a log
+[12:00] something happened

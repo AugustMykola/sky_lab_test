@@ -1,0 +1,44 @@
+@use '../../shared/styles/breakpoints' as breakpoints;
+
+.root {
+  min-height: 100vh;
+}
+
+.appBar {
+  border-bottom: 1px solid var(--mui-palette-divider);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.menuButton {
+  margin-right: 8px;
+
+  @include breakpoints.up(md) {
+    display: none !important;
+  }
+}
+
+.desktopNav {
+  display: none;
+  gap: 4px;
+
+  @include breakpoints.up(md) {
+    display: flex;
+  }
+}
+
+.main {
+  padding-top: 24px;
+  padding-bottom: 48px;
+
+  @include breakpoints.up(md) {
+    padding-top: 40px;
+  }
+}
