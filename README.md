@@ -135,6 +135,7 @@ features/analyses/
 shared/components/          reusable UI: PageStates (error/empty), TableSkeleton, StatCard, LevelChip, ConfirmDialog, FileDropZone, PageHeader
 shared/notifications/       Zustand notifications store + NotificationsHost (global snackbar)
 shared/connectivity/        Zustand online/offline store + OfflineBanner
+shared/offline/             offline Strategy (installed app vs open tab only), selected once at start-up
 shared/storage/             IndexedDB and safe localStorage adapters for Zustand persist
 app/layout/                 AppLayout, Brand, DesktopNav, MobileNavDrawer
 ```
@@ -165,7 +166,16 @@ An analysis never changes after it is created, so cached data never goes stale. 
   - Deleting an uploaded analysis is disabled with a hint, because it needs the server.
   - When the connection returns, the history refreshes automatically.
 
-> Service workers only run on **HTTPS** or `localhost`. On a server reached over plain `http://`, the app still works, including the IndexedDB cache and ETag, but without offline start or install. A domain with TLS (for example Caddy with Let's Encrypt) is needed for full PWA support.
+**HTTPS and plain HTTP (Strategy pattern).** Service workers and `crypto.randomUUID` exist only in secure contexts (HTTPS or `localhost`). At start-up the app detects what the browser allows and picks one of two offline strategies (`shared/offline/offlineStrategy.ts`):
+
+| | **Installed app** (HTTPS / localhost) | **Open tab only** (plain `http://`) |
+| --- | --- | --- |
+| Service worker | registered: the app opens offline and can be installed | not registered |
+| Cached history, analyses and entry pages | ✓ | ✓ |
+| Analysing offline and the upload queue | ✓ | ✓ |
+| Offline banner | standard notice | also warns to keep the tab open, because a reload needs the network |
+
+Ids are generated with `crypto.getRandomValues`, which works in both modes. The rest of the app never checks the environment itself. It only uses the selected strategy, which `OfflineStrategyProvider` makes available. For full PWA support on the server, put a domain with TLS (for example Caddy with Let's Encrypt) in front of nginx.
 
 ### Offline-first analyses (outbox)
 
